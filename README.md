@@ -1,5 +1,6 @@
 # Torque Logs Visualizer
-Quick and dirty interactive dashboard to analyze logs produced by the Torque APP ([Torque Lite](https://play.google.com/store/apps/details?id=org.prowl.torquefree)/[Torque Pro](https://play.google.com/store/apps/details?id=org.prowl.torque)).
+Quick and dirty interactive dashboard to analyze logs produced by the **Torque APP** ([Torque Lite](https://play.google.com/store/apps/details?id=org.prowl.torquefree)/[Torque Pro](https://play.google.com/store/apps/details?id=org.prowl.torque)).
+
 Note: I'm not affiliated in any way to the Torque App or its developer.
 
 ## Demo

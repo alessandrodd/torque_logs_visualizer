@@ -4,6 +4,7 @@ import io
 import pandas as pd
 import plotly.express as px
 from dash import Dash, html, dcc, Input, Output, State, callback_context, dash_table
+import dash_loading_spinners as dls
 import numpy as np
 
 FA = "https://use.fontawesome.com/releases/v5.8.1/css/all.css"
@@ -39,7 +40,9 @@ app.layout = html.Div([
         placeholder='Select a value...',
         style={'margin': '10px 0'}
     ),
-    html.Div(id='output-data-upload', style={'margin': '20px 0'}),
+    dls.Ring(
+        html.Div(id='output-data-upload', style={'margin': '20px 0'}),
+    ),
     html.A(
         className="github-fab",
         href="https://github.com/alessandrodd/torque_logs_visualizer",
