@@ -4,6 +4,10 @@ Quick and dirty interactive dashboard to analyze logs produced by the **Torque A
 Note: I'm not affiliated in any way to the Torque App or its developer.
 
 ## Demo
+https://torquevisualizer.eu.pythonanywhere.com/
+
+## Screenshot
+![App screenshot](/screenshots/example.png?raw=true)
 
 ## Requirements
 Python 3 (tested with Python 3.10)
