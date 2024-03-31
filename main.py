@@ -79,8 +79,14 @@ def update_output(list_of_contents, selected_value):
             selected_value = valid_columns[0] if len(valid_columns) > 0 else None
 
         if selected_value:
+            if any(df[selected_value]<0) and any (df[selected_value]>0):
+                color_scale = px.colors.sequential.RdBu
+                color_continuous_midpoint = 0
+            else:
+                color_scale = px.colors.sequential.Jet
+                color_continuous_midpoint = None
             fig_map = px.scatter_mapbox(df, lat='Latitude', lon='Longitude', color=selected_value,
-                                         zoom=10, height=500, color_continuous_scale=px.colors.sequential.Jet, hover_data=df.columns)
+                                         zoom=10, height=500, color_continuous_scale=color_scale, color_continuous_midpoint=color_continuous_midpoint, hover_data=df.columns)
             fig_map.update_layout(mapbox_style="open-street-map", margin={"r": 0, "t": 0, "l": 0, "b": 0})
 
             statistics = {
