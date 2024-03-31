@@ -15,6 +15,10 @@ def parse_contents(contents):
     try:
         if 'csv' in content_type:
             df = pd.read_csv(io.StringIO(decoded.decode('utf-8')), skipinitialspace=True, na_values=["-"])
+            if "Device Time" in df.columns:
+                df["Time"] = pd.to_datetime(df["Device Time"])
+            elif "GPS Time" in df.columns:
+                df["Time"] = pd.to_datetime(df["GPS Time"])
         else:
             return None, 'Unsupported file type.'
     except Exception as e:
@@ -72,6 +76,9 @@ def update_output(list_of_contents, selected_value):
         if df is None:
             return error_message, []
         
+        time_column = None
+        if "Time" in df.columns:
+            time_column = "Time"
         valid_columns = [col for col in df.columns if df[col].dtype in ['float64', 'int64']]
         dropdown_options = [{'label': col, 'value': col} for col in valid_columns]
         
@@ -88,7 +95,12 @@ def update_output(list_of_contents, selected_value):
             fig_map = px.scatter_mapbox(df, lat='Latitude', lon='Longitude', color=selected_value,
                                          zoom=10, height=500, color_continuous_scale=color_scale, color_continuous_midpoint=color_continuous_midpoint, hover_data=df.columns)
             fig_map.update_layout(mapbox_style="open-street-map", margin={"r": 0, "t": 0, "l": 0, "b": 0})
-
+            
+            if time_column:
+                fig_time_series = px.line(df, x=time_column, y=selected_value, title=f'{selected_value} over Time')
+                fig_time_series.update_traces(mode='lines')
+                fig_time_series.update_layout(hovermode='closest')
+            
             statistics = {
                 'Statistic': ['Average', 'Maximum', 'Minimum', 'Start', 'End', '25th Percentile', 'Median', '75th Percentile', '90th Percentile'],
                 'Value': [
@@ -103,6 +115,7 @@ def update_output(list_of_contents, selected_value):
 
             return html.Div([
                 dcc.Graph(id='map-plot', figure=fig_map),
+                dcc.Graph(id='time-series', figure=fig_time_series),
                 dash_table.DataTable(
                     data=stats_df.to_dict('records'),
                     columns=[{'id': c, 'name': c} for c in stats_df.columns],
