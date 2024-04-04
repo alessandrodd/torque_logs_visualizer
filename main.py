@@ -19,7 +19,7 @@ def remove_duplicate_header(csv_content, header_row=0):
     """
     lines = csv_content.split("\n")
     header = lines[header_row]
-    unique_lines = [header] + [line for i, line in enumerate(lines) if line != header or i == header_row]
+    unique_lines = [header] + [line for i, line in enumerate(lines) if line != header and i != header_row]
     return "\n".join(unique_lines)
 
 def parse_contents(contents):
@@ -31,10 +31,22 @@ def parse_contents(contents):
             csv_string = decoded.decode('utf-8')
             csv_string_no_dup_header = remove_duplicate_header(csv_string)
             df = pd.read_csv(io.StringIO(csv_string_no_dup_header), skipinitialspace=True, na_values=["-"])
+            # Attempt to parse 'Device Time' with specific format, then with infer
             if "Device Time" in df.columns:
-                df["Time"] = pd.to_datetime(df["Device Time"])
+                try:
+                    df["Time"] = pd.to_datetime(df["Device Time"], format='%d-%b-%Y %H:%M:%S.%f')
+                except ValueError as e1:
+                    try:
+                        df["Time"] = pd.to_datetime(df["Device Time"])
+                    except ValueError as e2:
+                        print(f"Error converting 'Device Time' to datetime: {e2}")
+                        return None, "Error converting 'Device Time' to datetime. Please check the format."
             elif "GPS Time" in df.columns:
-                df["Time"] = pd.to_datetime(df["GPS Time"])
+                try:
+                    df["Time"] = pd.to_datetime(df["GPS Time"])
+                except ValueError as e:
+                    print(f"Error converting 'GPS Time' to datetime: {e}")
+                    return None, "Error converting 'GPS Time' to datetime. Please check the format."
         else:
             return None, 'Unsupported file type.'
     except Exception as e:
