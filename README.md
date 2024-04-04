@@ -43,4 +43,4 @@ Navigate with your browser to the showed address (by default http://127.0.0.1:80
 - One or more .csv files will be produced inside your torqueLogs directory in your phone's Internal Storage
 
 ## Known Issues
-- Sometimes Torque produces the header multiple times inside the same CSV file. You will have to manually remove the doubles and just leave the initial one in the first line
+- ~~Sometimes Torque produces the header multiple times inside the same CSV file. You will have to manually remove the doubles and just leave the initial one in the first line~~ Added function to handle this data inconstitency automatically

@@ -9,12 +9,28 @@ import numpy as np
 
 FA = "https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 
+def remove_duplicate_header(csv_content, header_row=0):
+    """
+    Removes duplicate header rows in a CSV content string.
+    
+    :param csv_content: The CSV file content as a string.
+    :param header_row: The index of the header row. Defaults to 0.
+    :return: CSV content string with duplicate headers removed.
+    """
+    lines = csv_content.split("\n")
+    header = lines[header_row]
+    unique_lines = [header] + [line for i, line in enumerate(lines) if line != header or i == header_row]
+    return "\n".join(unique_lines)
+
 def parse_contents(contents):
     content_type, content_string = contents.split(',')
     decoded = base64.b64decode(content_string)
     try:
         if 'csv' in content_type:
-            df = pd.read_csv(io.StringIO(decoded.decode('utf-8')), skipinitialspace=True, na_values=["-"])
+            # Decode the CSV content and remove duplicate headers
+            csv_string = decoded.decode('utf-8')
+            csv_string_no_dup_header = remove_duplicate_header(csv_string)
+            df = pd.read_csv(io.StringIO(csv_string_no_dup_header), skipinitialspace=True, na_values=["-"])
             if "Device Time" in df.columns:
                 df["Time"] = pd.to_datetime(df["Device Time"])
             elif "GPS Time" in df.columns:
